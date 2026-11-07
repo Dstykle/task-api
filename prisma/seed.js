@@ -1,12 +1,11 @@
 import prisma from '../src/config/db.js';
 
-const isDev = !process.env.NODE_ENV || process.env.NODE_ENV === 'development';
+const shouldTruncate = process.env.NODE_ENV !== 'production';
 
 try {
-  // Only truncate table in development
-  if (isDev) {
+  if (shouldTruncate) {
     await prisma.$queryRaw`TRUNCATE tasks RESTART IDENTITY;`;
-    console.log('Development: tasks table truncated.');
+    console.log('Non-production: tasks table truncated.');
   }
   const count = await prisma.task.count();
 
